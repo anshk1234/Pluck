@@ -1,6 +1,23 @@
-# Pluck ⚡
+<div align="center">
+  <img src="assets/logo.svg" width="80" height="80" alt="Pluck Logo" />
+  <h1>Pluck</h1>
+  <p><strong>A high-speed, local-first media downloader with intelligent platform routing and real-time download controls.</strong></p>
 
-A high-speed, local-first media downloader for **Pinterest**, **YouTube**, **Instagram**, **X (Twitter)**, and **TikTok**. Built with a thoughtfully crafted Claude-inspired aesthetic, intelligent platform routing, real-time download controls, and seamless Windows Explorer integration.
+  <p>
+    <a href="#-compatible-platforms--media-formats"><img src="https://img.shields.io/badge/Pinterest-E60023?style=for-the-badge&logo=pinterest&logoColor=white" alt="Pinterest" /></a>
+    <a href="#-compatible-platforms--media-formats"><img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube" /></a>
+    <a href="#-compatible-platforms--media-formats"><img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram" /></a>
+    <a href="#-compatible-platforms--media-formats"><img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white" alt="X (Twitter)" /></a>
+    <a href="#-compatible-platforms--media-formats"><img src="https://img.shields.io/badge/TikTok-000000?style=for-the-badge&logo=tiktok&logoColor=white" alt="TikTok" /></a>
+  </p>
+
+  <p>
+    <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.8+" />
+    <img src="https://img.shields.io/badge/FastAPI-0.110+-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />
+    <img src="https://img.shields.io/badge/yt--dlp-Latest-red?style=flat-square" alt="yt-dlp" />
+    <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License: MIT" />
+  </p>
+</div>
 
 ---
 
@@ -8,11 +25,11 @@ A high-speed, local-first media downloader for **Pinterest**, **YouTube**, **Ins
 
 | Platform | Domain / Links | Supported Content | Available Formats |
 | :--- | :--- | :--- | :--- |
-| **Pinterest** 📌 | `pinterest.com`, `pin.it` | • High-Res Photos<br>• Video Pins | • **Original Photos (Full HD / 4K `/originals/`)**<br>• MP4 Video (Best Quality)<br>• MP3 Audio |
-| **YouTube** ▶️ | `youtube.com`, `youtu.be` | • Standard Videos<br>• YouTube Shorts | • 4K (2160p), 2K (1440p), 1080p, 720p, 480p, 360p<br>• MP3 / M4A Audio-only |
-| **Instagram** 📸 | `instagram.com` | • Reels<br>• Video Posts | • Original Quality MP4 Video<br>• Audio-only (MP3) |
-| **X (Twitter)** ✖️ | `x.com`, `twitter.com`, `t.co` | • Multi-Photo Posts<br>• Single Photos<br>• Video Posts | • **Original Photos (`?name=orig` Full Resolution)**<br>• Multi-quality MP4 Video |
-| **TikTok** 🎵 | `tiktok.com` | • Videos / TikToks | • Watermark-free MP4 Video<br>• MP3 Audio |
+| <img src="https://cdn.simpleicons.org/pinterest/E60023" width="18" height="18" valign="middle" /> **Pinterest** | `pinterest.com`, `pin.it` | • High-Res Photos<br>• Video Pins | • **Original Photos (Full HD / 4K `/originals/`)**<br>• MP4 Video (Best Quality)<br>• MP3 Audio |
+| <img src="https://cdn.simpleicons.org/youtube/FF0000" width="18" height="18" valign="middle" /> **YouTube** | `youtube.com`, `youtu.be` | • Standard Videos<br>• YouTube Shorts | • 4K (2160p), 2K (1440p), 1080p, 720p, 480p, 360p<br>• MP3 / M4A Audio-only |
+| <img src="https://cdn.simpleicons.org/instagram/E4405F" width="18" height="18" valign="middle" /> **Instagram** | `instagram.com` | • Reels<br>• Video Posts | • Original Quality MP4 Video<br>• Audio-only (MP3) |
+| <img src="https://cdn.simpleicons.org/x/000000" width="18" height="18" valign="middle" /> **X (Twitter)** | `x.com`, `twitter.com`, `t.co` | • Multi-Photo Posts<br>• Single Photos<br>• Video Posts | • **Original Photos (`?name=orig` Full Resolution)**<br>• Multi-quality MP4 Video |
+| <img src="https://cdn.simpleicons.org/tiktok/000000" width="18" height="18" valign="middle" /> **TikTok** | `tiktok.com` | • Videos / TikToks | • Watermark-free MP4 Video<br>• MP3 Audio |
 
 ---
 
@@ -69,9 +86,9 @@ flowchart TB
 
 ---
 
-## ✨ Core Features & Capabilities
+## Core Features & Capabilities
 
-### 🌐 Universal Multi-Platform Support
+### Universal Multi-Platform Support
 - **Pinterest (Photos & Videos)**:
   - Smart shortlink resolver (`pin.it` and standard pin URLs).
   - Dedicated extractor fetching uncompressed original photos (`/originals/` in up to 4K) without `yt-dlp` failures.
@@ -85,7 +102,7 @@ flowchart TB
 
 ---
 
-### 🎛️ Dual Download Modes
+### Dual Download Modes
 - **Single Link Mode**:
   - Paste any URL or click the **Paste** button for 1-click clipboard insertion.
   - Automatically fetches available video resolutions, audio-only streams, and original HD/4K photos.
@@ -98,7 +115,7 @@ flowchart TB
 
 ---
 
-### ⏯️ Complete Download & Progress Controls
+### Complete Download & Progress Controls
 - **Pause & Resume**: Pause active downloads on the fly and resume without corrupting files.
 - **Cancel**: Instantly terminate in-progress tasks.
 - **Real-Time Telemetry**:
@@ -109,13 +126,13 @@ flowchart TB
 
 ---
 
-### 🖼️ Interactive Preview & Photo Lightbox
+### Interactive Preview & Photo Lightbox
 - **Inline Video Player**: Preview videos directly within the card before downloading (supports both YouTube embeds and direct MP4 streams).
 - **Photo Lightbox**: View full-resolution images in an interactive modal with a 1-click **Download Photo** action.
 
 ---
 
-### 📜 Download History Slide-over Drawer
+### Download History Slide-over Drawer
 - Persistent local history of downloaded items (title, platform badge, thumbnail, timestamp, file path).
 - **1-Click Open**: Launch the downloaded file in your default media player or photo viewer.
 - **1-Click Show in Folder**: Opens Windows Explorer and highlights the exact downloaded file.
@@ -123,7 +140,7 @@ flowchart TB
 
 ---
 
-### 📂 Native Windows Explorer Integration
+### Native Windows Explorer Integration
 - Automatically defaults to your Windows Downloads folder (`C:\Users\<User>\Downloads`).
 - **Browse**: Opens native Windows directory picker modal (`tkinter`) to select any destination folder.
 - **Open**: 1-click button to open the active destination directory in Windows Explorer.
@@ -131,14 +148,14 @@ flowchart TB
 
 ---
 
-### 🎨 Thoughtful Claude-Inspired Interface
+### Thoughtful Claude-Inspired Interface
 - Clean, distraction-free aesthetic with warm peach accents (`#CC785C`).
 - Editorial typography pairing: **Newsreader** serif for titles and **Plus Jakarta Sans** for interface elements.
 - Monospaced tabular numerals (**JetBrains Mono**) for speeds, ETAs, and sizes.
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Method 1: Double-Click Launcher (Windows)
 Double-click [`start.bat`](start.bat). It will verify Python, install dependencies, and launch Pluck in your default browser.
@@ -162,10 +179,12 @@ Double-click [`start.bat`](start.bat). It will verify Python, install dependenci
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Pluck/
+├── assets/
+│   └── logo.svg           # Vector application logo
 ├── downloader.py          # Intelligent platform router, yt-dlp engine, Pinterest & Twitter extractors, download tasks
 ├── main.py                # FastAPI application, REST endpoints, Windows Explorer integration
 ├── requirements.txt       # Python dependencies (FastAPI, Uvicorn, yt-dlp, imageio-ffmpeg)
@@ -179,7 +198,7 @@ Pluck/
 
 ---
 
-## 🔌 API Reference
+## API Reference
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
@@ -199,7 +218,7 @@ Pluck/
 
 ---
 
-## ⚙️ Requirements
+## Requirements
 
 - **Python**: 3.8 or higher
 - **FFmpeg**: Handled automatically via `imageio-ffmpeg` or system PATH (used for 1080p/4K audio muxing and MP3 conversion).
