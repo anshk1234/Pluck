@@ -1,18 +1,83 @@
 # Pluck ⚡
 
-A high-speed, local-first media downloader for **YouTube**, **Instagram**, **Pinterest**, **X (Twitter)**, and **TikTok**. Built with a thoughtfully crafted Claude-inspired aesthetic, intelligent platform routing, real-time download controls, and seamless Windows Explorer integration.
+A high-speed, local-first media downloader for **Pinterest**, **YouTube**, **Instagram**, **X (Twitter)**, and **TikTok**. Built with a thoughtfully crafted Claude-inspired aesthetic, intelligent platform routing, real-time download controls, and seamless Windows Explorer integration.
 
 ---
 
-## ✨ Features
+## 📱 Compatible Platforms & Media Formats
+
+| Platform | Domain / Links | Supported Content | Available Formats |
+| :--- | :--- | :--- | :--- |
+| **Pinterest** 📌 | `pinterest.com`, `pin.it` | • High-Res Photos<br>• Video Pins | • **Original Photos (Full HD / 4K `/originals/`)**<br>• MP4 Video (Best Quality)<br>• MP3 Audio |
+| **YouTube** ▶️ | `youtube.com`, `youtu.be` | • Standard Videos<br>• YouTube Shorts | • 4K (2160p), 2K (1440p), 1080p, 720p, 480p, 360p<br>• MP3 / M4A Audio-only |
+| **Instagram** 📸 | `instagram.com` | • Reels<br>• Video Posts | • Original Quality MP4 Video<br>• Audio-only (MP3) |
+| **X (Twitter)** ✖️ | `x.com`, `twitter.com`, `t.co` | • Multi-Photo Posts<br>• Single Photos<br>• Video Posts | • **Original Photos (`?name=orig` Full Resolution)**<br>• Multi-quality MP4 Video |
+| **TikTok** 🎵 | `tiktok.com` | • Videos / TikToks | • Watermark-free MP4 Video<br>• MP3 Audio |
+
+---
+
+## 🏗️ Architecture & App Structure
+
+```mermaid
+flowchart TB
+    subgraph CLIENT["💻 Client Layer (Browser UI)"]
+        UI["Claude-Themed Web Interface (index.html)"]
+        ENGINE_JS["Client App Controller (app.js)"]
+        MODES["Single Link & Batch Queue Modes"]
+        PREVIEW["Interactive Video Player & 4K Photo Lightbox"]
+        HISTORY["Persistent History Drawer (1-Click Open & Show in Folder)"]
+        UI --> ENGINE_JS
+        ENGINE_JS --> MODES
+        ENGINE_JS --> PREVIEW
+        ENGINE_JS --> HISTORY
+    end
+
+    subgraph SERVER["⚡ FastAPI Application Server (main.py)"]
+        API["FastAPI Async REST Endpoints"]
+        POLLER["Real-Time Progress & Telemetry Poller (/api/progress)"]
+        WIN_SHELL["Windows Shell Integration (open-file, show-in-folder, select-folder)"]
+        API --> POLLER
+        API --> WIN_SHELL
+    end
+
+    subgraph ROUTER["🧭 Intelligent Media Router & Downloader Core (downloader.py)"]
+        SMART_ROUTER["Smart Platform Router (extract_video_info)"]
+        YTDLP["Universal Video Engine (yt-dlp + FFmpeg Audio Muxing)"]
+        PINTEREST["Pinterest Engine (pin.it Resolver · 4K /originals/ Photos · Videos)"]
+        TWITTER["Twitter / X Engine (fxtwitter API · ?name=orig Photos · Video Streams)"]
+        WORKER["Thread-Safe Background Workers (Pause / Resume / Cancel Controls)"]
+        SMART_ROUTER -->|"YouTube / Insta / TikTok"| YTDLP
+        SMART_ROUTER -->|"Pins & pin.it Links"| PINTEREST
+        SMART_ROUTER -->|"Tweets & Photo Posts"| TWITTER
+        YTDLP --> WORKER
+        PINTEREST --> WORKER
+        TWITTER --> WORKER
+    end
+
+    subgraph STORAGE["📁 Local Storage & System (Host PC)"]
+        DISK["Target Directory (Default: ~/Downloads or Custom Folder)"]
+        EXPLORER["Windows Explorer & Native Media Player"]
+        COLLISION["Collision-Safe File Writer (.mp4, .mp3, .jpg)"]
+        WORKER --> COLLISION
+        COLLISION --> DISK
+        WIN_SHELL --> EXPLORER
+        EXPLORER --> DISK
+    end
+
+    ENGINE_JS <-->|"HTTP / JSON REST API"| API
+```
+
+---
+
+## ✨ Core Features & Capabilities
 
 ### 🌐 Universal Multi-Platform Support
-- **YouTube & YouTube Shorts**: Standard videos, Shorts, and playlists in up to 4K (2160p), 2K (1440p), Full HD (1080p), HD (720p), SD (480p), and 360p.
-- **Instagram Reels & Videos**: Clean video extraction with original audio.
 - **Pinterest (Photos & Videos)**:
   - Smart shortlink resolver (`pin.it` and standard pin URLs).
   - Dedicated extractor fetching uncompressed original photos (`/originals/` in up to 4K) without `yt-dlp` failures.
-  - Full support for Pinterest video pins.
+  - Full support for Pinterest video pins and MP3 extraction.
+- **YouTube & YouTube Shorts**: Standard videos, Shorts, and playlists in up to 4K (2160p), 2K (1440p), Full HD (1080p), HD (720p), SD (480p), and 360p.
+- **Instagram Reels & Videos**: Clean video extraction with original audio.
 - **X / Twitter (Videos & Photos)**:
   - Full-resolution video extraction across multiple bitrates.
   - Multi-photo post support: retrieves all images in uncompressed original quality (`?name=orig`).
