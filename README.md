@@ -218,7 +218,58 @@ Pluck/
 
 ---
 
-## Requirements
+## 🛠️ Requirements & Dependencies
 
-- **Python**: 3.8 or higher
-- **FFmpeg**: Handled automatically via `imageio-ffmpeg` or system PATH (used for 1080p/4K audio muxing and MP3 conversion).
+| Component | Version | Purpose |
+| :--- | :--- | :--- |
+| **Python** | `3.8+` | Core application runtime |
+| **FastAPI** | `^0.110.0` | High-performance asynchronous API backend |
+| **Uvicorn** | `^0.28.0` | Lightning-fast ASGI production server |
+| **yt-dlp** | `Latest` | Video format extraction & streaming engine |
+| **imageio-ffmpeg** | `^0.4.9` | Auto-configured FFmpeg binary for audio muxing & conversion |
+
+---
+
+## 🔒 Privacy & Local-First Philosophy
+
+Pluck is built strictly with a **local-first** approach:
+- **Zero Telemetry**: No analytics, cookies, or tracking scripts are collected.
+- **Direct Streaming**: All downloaded content streams directly from the source CDN to your local disk.
+- **No Cloud Middlemen**: Your URLs, search history, and media files never touch any third-party intermediary server.
+
+---
+
+## 🤝 Contributing
+
+Contributions, bug reports, and feature requests are welcome!
+
+1. **Fork the repository** on GitHub.
+2. **Create a feature branch**:
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. **Commit your changes**:
+   ```bash
+   git commit -m "feat: add amazing feature"
+   ```
+4. **Push to the branch**:
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+5. **Open a Pull Request** and describe your changes.
+
+---
+
+## 📜 License & Disclaimer
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+> [!NOTE]
+> **Disclaimer**: Pluck is designed for personal, educational, and fair-use archiving purposes. Users are responsible for complying with the terms of service of the respective platforms and applicable copyright laws.
+
+---
+
+<div align="center">
+  <p>If you find <strong>Pluck</strong> helpful, consider giving it a ⭐ on <a href="https://github.com/anshk1234/Pluck">GitHub</a>!</p>
+  <p>Crafted with care by <a href="https://github.com/anshk1234"><strong>Ansh Kunwar</strong></a></p>
+</div>
