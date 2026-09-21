@@ -95,6 +95,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const historyList = document.getElementById('history-list');
     const historyCountBadge = document.getElementById('history-count-badge');
 
+    // About Modal Elements
+    const openAboutBtn = document.getElementById('open-about-btn');
+    const closeAboutBtn = document.getElementById('close-about-btn');
+    const aboutModal = document.getElementById('about-modal');
+
     // FFmpeg Elements
     const ffmpegIndicator = document.getElementById('ffmpeg-indicator');
     const ffmpegText = document.getElementById('ffmpeg-text');
@@ -185,6 +190,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const extUpper = (item.ext || 'MP4').toUpperCase();
             const timeAgo = formatTimeAgo(item.timestamp);
 
+            const platformIcons = {
+                pinterest: '<img src="https://cdn.simpleicons.org/pinterest/E60023" class="w-3 h-3 inline shrink-0" alt="Pinterest" />',
+                youtube: '<img src="https://cdn.simpleicons.org/youtube/FF0000" class="w-3 h-3 inline shrink-0" alt="YouTube" />',
+                instagram: '<img src="https://cdn.simpleicons.org/instagram/E4405F" class="w-3 h-3 inline shrink-0" alt="Instagram" />',
+                twitter: '<img src="https://cdn.simpleicons.org/x/000000" class="w-3 h-3 inline shrink-0" alt="X" />',
+                tiktok: '<img src="https://cdn.simpleicons.org/tiktok/000000" class="w-3 h-3 inline shrink-0" alt="TikTok" />',
+            };
+            const pKey = (item.platform || '').toLowerCase();
+            const pIcon = platformIcons[pKey] || '';
+            const pName = pKey === 'twitter' ? 'X' : (item.platform || 'Media');
+
             card.innerHTML = `
                 <div class="flex items-start gap-3">
                     <div class="w-14 h-14 rounded-lg bg-[#F4F1EA] overflow-hidden shrink-0 border border-[#ECE7E0] relative flex items-center justify-center">
@@ -193,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="flex-1 min-w-0 space-y-1">
                         <div class="flex items-center gap-1.5">
-                            <span class="text-[9px] uppercase font-semibold text-[#CC785C] px-1.5 py-0.2 bg-[#FAF2EE] rounded border border-[#F0DDD4]">${item.platform || 'Media'}</span>
+                            <span class="text-[9px] uppercase font-semibold text-[#CC785C] px-1.5 py-0.5 bg-[#FAF2EE] rounded border border-[#F0DDD4] inline-flex items-center gap-1">${pIcon}<span>${pName}</span></span>
                             <span class="text-[10px] text-[#9E9A90] font-mono-numbers">${timeAgo}</span>
                         </div>
                         <h4 class="text-xs font-semibold text-[#272522] truncate leading-tight" title="${item.title}">${item.title}</h4>
@@ -289,6 +305,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     renderHistory();
+
+    // About Modal listeners
+    if (openAboutBtn && aboutModal) {
+        openAboutBtn.addEventListener('click', () => {
+            aboutModal.classList.remove('hidden');
+        });
+    }
+    if (closeAboutBtn && aboutModal) {
+        closeAboutBtn.addEventListener('click', () => {
+            aboutModal.classList.add('hidden');
+        });
+    }
+    if (aboutModal) {
+        aboutModal.addEventListener('click', (e) => {
+            if (e.target === aboutModal) {
+                aboutModal.classList.add('hidden');
+            }
+        });
+    }
 
 
     // ==========================================
@@ -603,23 +638,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (videoPlatformBadge) {
             if (data.platform === 'pinterest') {
-                videoPlatformBadge.textContent = 'Pinterest';
+                videoPlatformBadge.innerHTML = '<img src="https://cdn.simpleicons.org/pinterest/E60023" class="w-3.5 h-3.5 inline shrink-0 mr-1" alt="Pinterest" /><span>Pinterest</span>';
                 videoPlatformBadge.className = 'inline-flex items-center text-[10px] font-semibold text-[#E60023] bg-[#FEF0F2] border border-[#FBD0D5] px-2 py-0.5 rounded-md';
                 videoPlatformBadge.classList.remove('hidden');
             } else if (data.platform === 'instagram') {
-                videoPlatformBadge.textContent = 'Instagram';
+                videoPlatformBadge.innerHTML = '<img src="https://cdn.simpleicons.org/instagram/E4405F" class="w-3.5 h-3.5 inline shrink-0 mr-1" alt="Instagram" /><span>Instagram</span>';
                 videoPlatformBadge.className = 'inline-flex items-center text-[10px] font-semibold text-[#B84D7A] bg-[#FDF2F7] border border-[#F5D5E5] px-2 py-0.5 rounded-md';
                 videoPlatformBadge.classList.remove('hidden');
             } else if (data.platform === 'youtube') {
-                videoPlatformBadge.textContent = 'YouTube';
+                videoPlatformBadge.innerHTML = '<img src="https://cdn.simpleicons.org/youtube/FF0000" class="w-3.5 h-3.5 inline shrink-0 mr-1" alt="YouTube" /><span>YouTube</span>';
                 videoPlatformBadge.className = 'inline-flex items-center text-[10px] font-semibold text-[#CC4444] bg-[#FFF2F2] border border-[#FCD5D5] px-2 py-0.5 rounded-md';
                 videoPlatformBadge.classList.remove('hidden');
             } else if (data.platform === 'twitter') {
-                videoPlatformBadge.textContent = 'X (Twitter)';
+                videoPlatformBadge.innerHTML = '<img src="https://cdn.simpleicons.org/x/000000" class="w-3.5 h-3.5 inline shrink-0 mr-1" alt="X" /><span>X (Twitter)</span>';
                 videoPlatformBadge.className = 'inline-flex items-center text-[10px] font-semibold text-[#1A6EB0] bg-[#F0F7FD] border border-[#D5E8F8] px-2 py-0.5 rounded-md';
                 videoPlatformBadge.classList.remove('hidden');
             } else if (data.platform === 'tiktok') {
-                videoPlatformBadge.textContent = 'TikTok';
+                videoPlatformBadge.innerHTML = '<img src="https://cdn.simpleicons.org/tiktok/000000" class="w-3.5 h-3.5 inline shrink-0 mr-1" alt="TikTok" /><span>TikTok</span>';
                 videoPlatformBadge.className = 'inline-flex items-center text-[10px] font-semibold text-[#0B7285] bg-[#F0FBFC] border border-[#D0F4F7] px-2 py-0.5 rounded-md';
                 videoPlatformBadge.classList.remove('hidden');
             } else {

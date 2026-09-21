@@ -120,21 +120,47 @@
         </div>
       </div>
 
-      <!-- Header Actions: History & FFmpeg -->
-      <div class="flex items-center gap-2.5">
+      <!-- Header Actions: Star on GitHub, About (i), History & FFmpeg -->
+      <div class="flex items-center gap-2">
+        <!-- Star on GitHub Button -->
+        <a 
+          href="https://github.com/anshk1234/Pluck" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          title="Star Pluck on GitHub"
+          class="flex items-center gap-1.5 text-xs text-[#272522] hover:text-[#CC785C] bg-[#F4F1EA] hover:bg-[#FAF2EE] border border-[#E8E3DA] hover:border-[#F0DDD4] px-2.5 sm:px-3 py-1.5 rounded-full transition cursor-pointer font-medium shadow-2xs"
+        >
+          <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          <span class="text-[11px] hidden sm:inline">Star on GitHub</span>
+          <span class="text-[11px] sm:hidden">Star</span>
+          <i data-lucide="star" class="w-3 h-3 text-[#E5A93C] fill-[#E5A93C] shrink-0"></i>
+        </a>
+
+        <!-- Info / Overview Button (i) -->
+        <button 
+          type="button"
+          id="open-about-btn" 
+          title="App Overview & About"
+          class="w-7 h-7 flex items-center justify-center text-xs text-[#706D65] hover:text-[#272522] bg-[#F4F1EA] hover:bg-[#EDE8DE] border border-[#E8E3DA] rounded-full transition cursor-pointer shrink-0"
+        >
+          <span class="font-serif-claude italic font-bold text-xs">i</span>
+        </button>
+
         <!-- History Drawer Button -->
         <button 
           id="open-history-btn" 
           title="View recent downloads"
-          class="flex items-center gap-1.5 text-xs text-[#706D65] hover:text-[#272522] bg-[#F4F1EA] hover:bg-[#EDE8DE] border border-[#E8E3DA] px-3 py-1.5 rounded-full transition cursor-pointer"
+          class="flex items-center gap-1.5 text-xs text-[#706D65] hover:text-[#272522] bg-[#F4F1EA] hover:bg-[#EDE8DE] border border-[#E8E3DA] px-2.5 sm:px-3 py-1.5 rounded-full transition cursor-pointer shrink-0"
         >
           <i data-lucide="history" class="w-3.5 h-3.5 text-[#8A867D]"></i>
-          <span class="font-medium text-[11px]">History</span>
+          <span class="font-medium text-[11px] hidden sm:inline">History</span>
           <span id="history-count-badge" class="hidden px-1.5 py-0.2 bg-[#CC785C] text-white text-[10px] font-mono-numbers rounded-full">0</span>
         </button>
 
         <!-- FFmpeg Status Badge -->
-        <div id="ffmpeg-badge" class="flex items-center gap-2 text-xs text-[#706D65] bg-[#F4F1EA] border border-[#E8E3DA] px-3 py-1.5 rounded-full">
+        <div id="ffmpeg-badge" class="flex items-center gap-1.5 sm:gap-2 text-xs text-[#706D65] bg-[#F4F1EA] border border-[#E8E3DA] px-2.5 sm:px-3 py-1.5 rounded-full shrink-0">
           <span id="ffmpeg-indicator" class="w-2 h-2 rounded-full bg-[#A8A49C]"></span>
           <span id="ffmpeg-text" class="font-medium text-[11px]">checking</span>
         </div>
@@ -146,13 +172,37 @@
   <main class="flex-1 max-w-2xl w-full mx-auto px-6 py-10 space-y-7">
 
     <!-- Hero Introduction -->
-    <div class="space-y-1.5 text-center sm:text-left">
+    <div class="space-y-2 text-center sm:text-left">
       <h1 class="font-serif-claude text-3xl sm:text-4xl font-normal text-[#272522] tracking-tight">
         Download videos, photos & audio.
       </h1>
       <p class="text-sm text-[#706D65] font-normal leading-relaxed max-w-lg">
         Extract YouTube, Instagram Reels, Pinterest (Photos & Videos), X (Twitter), and TikTok media cleanly in full quality.
       </p>
+
+      <!-- Supported Apps with Real Logos -->
+      <div class="flex items-center gap-2 pt-1 flex-wrap justify-center sm:justify-start">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-[#ECE7E0] rounded-full text-xs shadow-2xs">
+          <img src="https://cdn.simpleicons.org/pinterest/E60023" class="w-3.5 h-3.5" alt="Pinterest" />
+          <span class="text-[11px] font-medium text-[#272522]">Pinterest</span>
+        </div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-[#ECE7E0] rounded-full text-xs shadow-2xs">
+          <img src="https://cdn.simpleicons.org/youtube/FF0000" class="w-3.5 h-3.5" alt="YouTube" />
+          <span class="text-[11px] font-medium text-[#272522]">YouTube</span>
+        </div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-[#ECE7E0] rounded-full text-xs shadow-2xs">
+          <img src="https://cdn.simpleicons.org/instagram/E4405F" class="w-3.5 h-3.5" alt="Instagram" />
+          <span class="text-[11px] font-medium text-[#272522]">Instagram</span>
+        </div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-[#ECE7E0] rounded-full text-xs shadow-2xs">
+          <img src="https://cdn.simpleicons.org/x/000000" class="w-3.5 h-3.5" alt="X" />
+          <span class="text-[11px] font-medium text-[#272522]">X (Twitter)</span>
+        </div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-[#ECE7E0] rounded-full text-xs shadow-2xs">
+          <img src="https://cdn.simpleicons.org/tiktok/000000" class="w-3.5 h-3.5" alt="TikTok" />
+          <span class="text-[11px] font-medium text-[#272522]">TikTok</span>
+        </div>
+      </div>
     </div>
 
     <!-- FFmpeg Missing Notice Banner (Warm peach alert) -->
@@ -550,6 +600,89 @@
           <i data-lucide="download" class="w-3.5 h-3.5"></i>
           <span>Download Photo</span>
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Pluck Overview Modal (i) -->
+  <div id="about-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="relative w-full max-w-md claude-card rounded-2xl p-6 space-y-5 shadow-2xl border border-[#ECE7E0]">
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[#CC785C] flex items-center justify-center text-white shadow-sm shadow-[#CC785C]/20">
+            <i data-lucide="feather" class="w-4 h-4 text-white"></i>
+          </div>
+          <div>
+            <h3 class="font-serif-claude text-xl font-medium text-[#272522]">About Pluck</h3>
+            <p class="text-[11px] text-[#9E9A90]">High-speed local media downloader</p>
+          </div>
+        </div>
+        <button id="close-about-btn" class="p-1 rounded-lg text-[#9E9A90] hover:text-[#272522] hover:bg-[#F4F1EA] transition cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Overview Content -->
+      <div class="space-y-3.5 text-xs text-[#706D65] leading-relaxed">
+        <p>
+          <strong>Pluck</strong> is a fast, local-first media extractor designed to cleanly download videos, full-resolution photos, and audio with zero tracking and full quality selection.
+        </p>
+
+        <div class="p-3.5 bg-[#FAF8F5] rounded-xl border border-[#EAE6DF] space-y-2.5">
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-[#9E9A90] block">Supported Platforms</span>
+          <div class="grid grid-cols-2 gap-2 text-[11px] text-[#272522] font-medium">
+            <div class="flex items-center gap-2">
+              <img src="https://cdn.simpleicons.org/pinterest/E60023" class="w-3.5 h-3.5 shrink-0" alt="Pinterest" />
+              <span>Pinterest (4K & Video)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <img src="https://cdn.simpleicons.org/youtube/FF0000" class="w-3.5 h-3.5 shrink-0" alt="YouTube" />
+              <span>YouTube & Shorts</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <img src="https://cdn.simpleicons.org/instagram/E4405F" class="w-3.5 h-3.5 shrink-0" alt="Instagram" />
+              <span>Instagram Reels</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <img src="https://cdn.simpleicons.org/x/000000" class="w-3.5 h-3.5 shrink-0" alt="X" />
+              <span>X / Twitter (Orig Photos)</span>
+            </div>
+            <div class="flex items-center gap-2 col-span-2">
+              <img src="https://cdn.simpleicons.org/tiktok/000000" class="w-3.5 h-3.5 shrink-0" alt="TikTok" />
+              <span>TikTok (No Watermark)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-[11px]">
+          <div class="flex items-center gap-2 text-[#272522]">
+            <i data-lucide="zap" class="w-3.5 h-3.5 text-[#CC785C] shrink-0"></i>
+            <span><strong>Dual Modes:</strong> Single link fetch & sequential batch queue</span>
+          </div>
+          <div class="flex items-center gap-2 text-[#272522]">
+            <i data-lucide="sliders" class="w-3.5 h-3.5 text-[#CC785C] shrink-0"></i>
+            <span><strong>Full Controls:</strong> Live pause, resume, and cancellation</span>
+          </div>
+          <div class="flex items-center gap-2 text-[#272522]">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-[#CC785C] shrink-0"></i>
+            <span><strong>100% Local & Private:</strong> Direct stream to disk, zero telemetry</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="pt-3 border-t border-[#ECE7E0] flex items-center justify-between">
+        <span class="text-[10px] text-[#9E9A90] font-mono-numbers">v1.0.0 · MIT License</span>
+        <a 
+          href="https://github.com/anshk1234/Pluck" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="claude-btn-primary px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 cursor-pointer shadow-xs"
+        >
+          <i data-lucide="star" class="w-3 h-3 text-[#FFE28A] fill-[#FFE28A]"></i>
+          <span>Star on GitHub</span>
+        </a>
       </div>
     </div>
   </div>
