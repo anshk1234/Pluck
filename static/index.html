@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pluck — Thoughtful Media Downloader</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --bg-cream: #FAF8F5;
+      --surface-card: #FFFFFF;
+      --surface-muted: #F4F1EA;
+      --border-warm: #EAE6DF;
+      --border-subtle: #F0EDE6;
+      --text-primary: #272522;
+      --text-secondary: #706D65;
+      --text-tertiary: #9E9A90;
+      /* Claude's signature peach / terracotta */
+      --claude-peach: #CC785C;
+      --claude-peach-hover: #B8674D;
+      --claude-peach-soft: #FAF2EE;
+      --claude-peach-border: #F0DDD4;
+    }
+
+    * {
+      border-color: var(--border-warm);
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-cream);
+      color: var(--text-primary);
+    }
+
+    .font-serif-claude {
+      font-family: 'Newsreader', serif;
+    }
+
+    .font-mono-numbers {
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .claude-card {
+      background-color: #FFFFFF;
+      border: 1px solid #ECE7E0;
+      box-shadow: 0 2px 8px -2px rgba(39, 37, 34, 0.04), 0 1px 2px rgba(39, 37, 34, 0.02);
+    }
+
+    .claude-btn-primary {
+      background-color: #CC785C;
+      color: #FFFFFF;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .claude-btn-primary:hover {
+      background-color: #B8674D;
+      box-shadow: 0 4px 12px -2px rgba(204, 120, 92, 0.25);
+    }
+
+    .claude-btn-secondary {
+      background-color: #F7F5F0;
+      border: 1px solid #EAE5DC;
+      color: #4A4742;
+      transition: all 0.15s ease;
+    }
+    .claude-btn-secondary:hover {
+      background-color: #EDE8DE;
+      color: #272522;
+      border-color: #DFD9CE;
+    }
+
+    .claude-input {
+      background-color: #FAF8F5;
+      border: 1px solid #E2DCD3;
+      color: #272522;
+      transition: all 0.15s ease;
+    }
+    .claude-input:focus {
+      background-color: #FFFFFF;
+      border-color: #CC785C;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(204, 120, 92, 0.12);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-cream);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #DEDAD1;
+      border-radius: 99px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #C4BFB5;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-[#F3DCD3] selection:text-[#7A3620]">
+
+  <!-- Top Navigation -->
+  <header class="border-b border-[#ECE7E0] bg-[#FAF8F5]/90 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo & Name -->
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-xl bg-[#CC785C] flex items-center justify-center text-white shadow-sm shadow-[#CC785C]/20">
+          <i data-lucide="feather" class="w-4 h-4 text-white"></i>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span class="font-serif-claude text-2xl font-medium tracking-tight text-[#272522]">Pluck</span>
+          <span class="text-[11px] font-medium text-[#9E9A90] tracking-wide">downloader</span>
+        </div>
+      </div>
+
+      <!-- Header Actions: History & FFmpeg -->
+      <div class="flex items-center gap-2.5">
+        <!-- History Drawer Button -->
+        <button 
+          id="open-history-btn" 
+          title="View recent downloads"
+          class="flex items-center gap-1.5 text-xs text-[#706D65] hover:text-[#272522] bg-[#F4F1EA] hover:bg-[#EDE8DE] border border-[#E8E3DA] px-3 py-1.5 rounded-full transition cursor-pointer"
+        >
+          <i data-lucide="history" class="w-3.5 h-3.5 text-[#8A867D]"></i>
+          <span class="font-medium text-[11px]">History</span>
+          <span id="history-count-badge" class="hidden px-1.5 py-0.2 bg-[#CC785C] text-white text-[10px] font-mono-numbers rounded-full">0</span>
+        </button>
+
+        <!-- FFmpeg Status Badge -->
+        <div id="ffmpeg-badge" class="flex items-center gap-2 text-xs text-[#706D65] bg-[#F4F1EA] border border-[#E8E3DA] px-3 py-1.5 rounded-full">
+          <span id="ffmpeg-indicator" class="w-2 h-2 rounded-full bg-[#A8A49C]"></span>
+          <span id="ffmpeg-text" class="font-medium text-[11px]">checking</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-2xl w-full mx-auto px-6 py-10 space-y-7">
+
+    <!-- Hero Introduction -->
+    <div class="space-y-1.5 text-center sm:text-left">
+      <h1 class="font-serif-claude text-3xl sm:text-4xl font-normal text-[#272522] tracking-tight">
+        Download videos, photos & audio.
+      </h1>
+      <p class="text-sm text-[#706D65] font-normal leading-relaxed max-w-lg">
+        Extract YouTube, Instagram Reels, Pinterest (Photos & Videos), X (Twitter), and TikTok media cleanly in full quality.
+      </p>
+    </div>
+
+    <!-- FFmpeg Missing Notice Banner (Warm peach alert) -->
+    <div id="ffmpeg-notice" class="hidden p-4 rounded-xl border border-[#F0DDD4] bg-[#FAF2EE] text-xs text-[#7A3620] flex items-start justify-between gap-3">
+      <div class="flex items-start gap-3">
+        <i data-lucide="info" class="w-4 h-4 text-[#CC785C] shrink-0 mt-0.5"></i>
+        <div class="space-y-1">
+          <p class="font-semibold text-[#8B3F27]">FFmpeg not installed</p>
+          <p class="text-[#96523D] leading-relaxed">To enable 1080p/4K audio merging & MP3 extraction, run <code class="px-1.5 py-0.5 bg-[#FFFFFF] rounded text-[#8B3F27] border border-[#ECD1C5] font-mono-numbers text-[11px]">pip install imageio-ffmpeg</code> and restart.</p>
+        </div>
+      </div>
+      <button id="close-ffmpeg-notice" class="text-[#CC785C] hover:text-[#8B3F27] transition">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- Main Input Card -->
+    <div class="claude-card rounded-2xl p-6 space-y-4">
+
+      <!-- Mode Switcher (Always visible at top of card) -->
+      <div class="flex items-center justify-between pb-3 border-b border-[#ECE7E0]">
+        <span class="text-xs font-semibold text-[#706D65] tracking-wide uppercase text-[11px]">
+          Download Mode
+        </span>
+        <div class="flex bg-[#F4F1EA] rounded-lg p-0.5 border border-[#EAE5DC] text-[11px] font-medium">
+          <button type="button" id="mode-single-btn" class="px-3 py-1 rounded-md bg-white text-[#272522] shadow-xs transition cursor-pointer font-medium">Single Link</button>
+          <button type="button" id="mode-batch-btn" class="px-3 py-1 rounded-md text-[#706D65] hover:text-[#272522] transition cursor-pointer flex items-center gap-1.5 font-medium">
+            <i data-lucide="layers" class="w-3 h-3"></i>
+            <span>Batch Queue</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Single Link Mode Form -->
+      <div id="single-mode-container" class="space-y-4">
+        <form id="url-form" class="space-y-4">
+          
+          <!-- URL Input Header -->
+          <div class="space-y-1.5">
+            <label for="url-input" class="text-xs font-semibold text-[#706D65] tracking-wide uppercase text-[11px]">
+              Media or Video Link
+            </label>
+
+            <div class="relative flex items-center">
+              <div class="absolute left-3.5 text-[#9E9A90] pointer-events-none">
+                <i data-lucide="link-2" class="w-4 h-4"></i>
+              </div>
+              <input 
+                type="url" 
+                id="url-input" 
+                placeholder="Paste YouTube, Instagram, Pinterest, X (Twitter), or TikTok link..." 
+                required
+                autocomplete="off"
+                class="claude-input w-full rounded-xl pl-10 pr-24 py-3 text-sm placeholder-[#A8A49C]"
+              />
+
+
+            <button 
+              type="button" 
+              id="paste-btn"
+              title="Paste from clipboard"
+              class="absolute right-2 px-2.5 py-1 text-xs font-medium text-[#706D65] hover:text-[#272522] bg-[#F4F1EA] hover:bg-[#EBE7DE] rounded-lg border border-[#E2DDD3] transition flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="clipboard" class="w-3.5 h-3.5 text-[#8A867D]"></i>
+              <span>Paste</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Destination Folder Row -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-semibold text-[#706D65] tracking-wide uppercase text-[11px]">
+            Save Destination
+          </label>
+          <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2.5 flex-1 min-w-0 claude-input rounded-xl px-3.5 py-2.5">
+              <i data-lucide="folder" class="w-4 h-4 text-[#A8A49C] shrink-0"></i>
+              <input 
+                type="text" 
+                id="destination-input" 
+                title="Download folder path"
+                class="flex-1 bg-transparent border-0 p-0 text-[#272522] text-xs font-mono-numbers truncate focus:outline-none"
+              />
+            </div>
+
+            <!-- Browse Button -->
+            <button 
+              type="button" 
+              id="browse-folder-btn"
+              class="claude-btn-secondary px-3.5 py-2.5 rounded-xl text-xs font-medium flex items-center gap-1.5 cursor-pointer shrink-0"
+              title="Browse on Windows"
+            >
+              <i data-lucide="folder-search" class="w-3.5 h-3.5 text-[#706D65]"></i>
+              <span>Browse</span>
+            </button>
+
+            <!-- Open Button -->
+            <button 
+              type="button" 
+              id="open-folder-btn"
+              class="claude-btn-secondary px-3.5 py-2.5 rounded-xl text-xs font-medium flex items-center gap-1.5 cursor-pointer shrink-0"
+              title="Open in Windows Explorer"
+            >
+              <i data-lucide="external-link" class="w-3.5 h-3.5 text-[#706D65]"></i>
+              <span>Open</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit / Fetch Button -->
+        <div class="pt-1">
+          <button 
+            type="submit" 
+            id="fetch-btn" 
+            class="claude-btn-primary w-full py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <span id="fetch-btn-text">Find Available Formats</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+
+      <!-- Batch Queue Mode Form (Hidden by default) -->
+      <div id="batch-mode-container" class="hidden space-y-4">
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label for="batch-urls-input" class="text-xs font-semibold text-[#706D65] tracking-wide uppercase text-[11px]">
+              Paste Multiple Links (One per line)
+            </label>
+            <span id="batch-count-label" class="text-[11px] font-mono-numbers text-[#9E9A90]">0 links detected</span>
+          </div>
+          <textarea 
+            id="batch-urls-input"
+            rows="4"
+            placeholder="https://www.youtube.com/watch?v=...&#10;https://www.instagram.com/reel/...&#10;https://pin.it/...&#10;https://x.com/..."
+            class="claude-input w-full rounded-xl p-3 text-xs font-mono-numbers placeholder-[#A8A49C] resize-y"
+          ></textarea>
+        </div>
+
+        <!-- Batch Format & Action Row -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-[#706D65] font-medium">Download format:</span>
+            <select id="batch-format-select" class="claude-input rounded-xl px-3 py-2 text-xs text-[#272522] font-medium cursor-pointer">
+              <option value="video">Best Video (MP4)</option>
+              <option value="audio">Audio Only (MP3)</option>
+              <option value="image">Photos Only (HD)</option>
+            </select>
+          </div>
+          <button 
+            type="button" 
+            id="start-batch-btn"
+            class="claude-btn-primary px-5 py-2.5 rounded-xl font-medium text-xs flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <i data-lucide="play" class="w-3.5 h-3.5"></i>
+            <span id="start-batch-btn-text">Start Batch Download</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading-state" class="hidden claude-card rounded-2xl p-8 text-center space-y-3">
+      <div class="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-[#E8E3DA] border-t-[#CC785C] animate-spin"></div>
+      <p class="text-xs font-medium text-[#706D65]">Fetching video information and available formats...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error-card" class="hidden p-4 rounded-xl border border-[#F0D5D5] bg-[#FDF5F5] text-xs text-[#8A3A3A] flex items-start justify-between gap-3">
+      <div class="flex items-start gap-2.5">
+        <i data-lucide="alert-circle" class="w-4 h-4 text-[#B84D4D] shrink-0 mt-0.5"></i>
+        <div>
+          <p class="font-semibold text-[#8A3A3A]" id="error-title">Unable to retrieve video</p>
+          <p class="text-[#9E4D4D] mt-0.5 leading-relaxed" id="error-message"></p>
+        </div>
+      </div>
+      <button id="close-error-btn" class="text-[#B84D4D] hover:text-[#8A3A3A]">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- Video Info & Quality Options Card -->
+    <div id="video-card" class="hidden claude-card rounded-2xl p-6 space-y-6 relative">
+      
+      <!-- Dismiss / Close Video Card Button (x) -->
+      <button 
+        id="close-video-card-btn" 
+        title="Close details"
+        class="absolute top-4 right-4 p-1.5 rounded-lg text-[#9E9A90] hover:text-[#272522] hover:bg-[#F4F1EA] transition cursor-pointer z-30"
+      >
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <!-- Video Metadata Header -->
+      <div class="flex flex-col sm:flex-row gap-4 items-start pr-6">
+        <div class="relative w-full sm:w-52 aspect-video rounded-xl overflow-hidden bg-[#F4F1EA] shrink-0 border border-[#ECE7E0] group">
+          <img id="video-thumb" src="" alt="Thumbnail" class="w-full h-full object-cover">
+          <span id="video-duration" class="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/75 text-[10px] font-mono-numbers font-medium text-white rounded z-10">
+            --:--
+          </span>
+          
+          <!-- Play / Preview Button Overlay -->
+          <button 
+            id="preview-play-btn" 
+            title="Preview media" 
+            class="absolute inset-0 m-auto w-11 h-11 rounded-full bg-black/60 hover:bg-[#CC785C] text-white flex items-center justify-center transition-all shadow-md backdrop-blur-xs cursor-pointer group-hover:scale-105 z-10"
+          >
+            <i data-lucide="play" class="w-5 h-5 ml-0.5" id="preview-btn-icon"></i>
+          </button>
+
+          <!-- Inline Video Player -->
+          <video id="video-preview-player" class="hidden absolute inset-0 w-full h-full object-contain bg-black z-20" controls playsinline></video>
+          
+          <!-- YouTube Iframe Preview -->
+          <iframe id="youtube-preview-frame" class="hidden absolute inset-0 w-full h-full z-20" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+          
+          <!-- Close Preview Button -->
+          <button id="close-preview-btn" class="hidden absolute top-2 right-2 w-7 h-7 rounded-full bg-black/75 text-white flex items-center justify-center hover:bg-black transition z-30 cursor-pointer" title="Close Preview">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+
+        <div class="flex-1 min-w-0 space-y-1.5">
+          <div class="flex items-center gap-2">
+            <div class="inline-flex items-center gap-1.5 text-xs text-[#706D65] bg-[#F7F5F0] border border-[#EAE5DC] px-2.5 py-0.5 rounded-md">
+              <i data-lucide="user" class="w-3 h-3 text-[#9E9A90]"></i>
+              <span id="video-channel" class="font-medium truncate max-w-[200px]">Channel</span>
+            </div>
+            <span id="video-platform-badge" class="hidden text-[10px] font-semibold px-2 py-0.5 rounded-md"></span>
+          </div>
+          <h2 id="video-title" class="font-serif-claude text-lg sm:text-xl font-medium text-[#272522] leading-snug line-clamp-2">
+            Video Title
+          </h2>
+          <div class="pt-1 flex items-center gap-2 text-xs">
+            <button id="quick-preview-link-btn" class="text-[#CC785C] hover:text-[#8B3F27] font-medium flex items-center gap-1 transition cursor-pointer text-[11px]">
+              <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+              <span id="quick-preview-text">Preview Media</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Format Filter Tabs -->
+      <div class="border-t border-[#ECE7E0] pt-4 space-y-4">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-[#706D65] uppercase tracking-wide text-[11px]">Format Options</span>
+          <div class="flex bg-[#F4F1EA] rounded-xl p-1 border border-[#EAE5DC] text-xs font-medium">
+            <button id="tab-video" class="px-3 py-1 rounded-lg bg-white text-[#272522] shadow-xs transition cursor-pointer">Video (MP4)</button>
+            <button id="tab-image" class="px-3 py-1 rounded-lg text-[#706D65] hover:text-[#272522] transition cursor-pointer">Photo (HD)</button>
+            <button id="tab-audio" class="px-3 py-1 rounded-lg text-[#706D65] hover:text-[#272522] transition cursor-pointer">Audio Only</button>
+          </div>
+        </div>
+
+        <!-- Video Formats Grid -->
+        <div id="video-options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Photo / Image Formats Grid -->
+        <div id="image-options-container" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Audio Formats Grid -->
+        <div id="audio-options-container" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Active Download Progress Card -->
+    <div id="download-progress-card" class="hidden claude-card rounded-2xl p-6 space-y-4 border-[#F0DDD4] bg-[#FDFCFB]">
+      <div class="flex items-start justify-between gap-3">
+        <div class="space-y-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <span id="progress-indicator-dot" class="w-2 h-2 rounded-full bg-[#CC785C] animate-pulse"></span>
+            <span id="progress-status-text" class="text-xs font-semibold text-[#272522]">Downloading...</span>
+          </div>
+          <p id="progress-filename" class="text-xs text-[#706D65] font-mono-numbers truncate max-w-md">Preparing download...</p>
+        </div>
+        
+        <div class="flex items-center gap-3">
+          <!-- In-progress Controls -->
+          <div id="download-controls" class="flex items-center gap-2">
+            <button 
+              type="button" 
+              id="pause-download-btn"
+              title="Pause or resume download"
+              class="claude-btn-secondary px-3 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="pause" class="w-3.5 h-3.5 text-[#706D65]" id="pause-btn-icon"></i>
+              <span id="pause-btn-text">Pause</span>
+            </button>
+            <button 
+              type="button" 
+              id="cancel-download-btn"
+              title="Cancel download"
+              class="px-2.5 py-1 rounded-lg text-xs font-medium text-[#9E4D4D] hover:text-[#7A2E2E] bg-[#FAF2F2] hover:bg-[#F5E6E6] border border-[#F0D8D8] flex items-center gap-1 transition cursor-pointer"
+            >
+              <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              <span>Cancel</span>
+            </button>
+          </div>
+          <span id="progress-percentage" class="text-base font-semibold font-mono-numbers text-[#CC785C]">0%</span>
+        </div>
+      </div>
+
+
+      <!-- Warm Peach Progress Bar -->
+      <div class="w-full bg-[#F4F1EA] rounded-full h-2 overflow-hidden">
+        <div id="progress-bar" class="bg-[#CC785C] h-full rounded-full transition-all duration-200 w-0"></div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-3 gap-2 text-xs font-mono-numbers pt-2 border-t border-[#ECE7E0]">
+        <div>
+          <span class="text-[#9E9A90] text-[10px] uppercase tracking-wider block">Speed</span>
+          <span id="stat-speed" class="font-medium text-[#272522]">-- MB/s</span>
+        </div>
+        <div>
+          <span class="text-[#9E9A90] text-[10px] uppercase tracking-wider block">Remaining</span>
+          <span id="stat-eta" class="font-medium text-[#272522]">--</span>
+        </div>
+        <div>
+          <span class="text-[#9E9A90] text-[10px] uppercase tracking-wider block">Size</span>
+          <span id="stat-size" class="font-medium text-[#272522]">--</span>
+        </div>
+      </div>
+
+      <!-- Completion Actions -->
+      <div id="download-completed-actions" class="hidden flex items-center gap-2 pt-2">
+        <button 
+          id="open-file-btn"
+          class="claude-btn-primary flex-1 py-2.5 rounded-xl text-xs font-medium transition cursor-pointer flex items-center justify-center gap-1.5"
+        >
+          <i data-lucide="play" class="w-3.5 h-3.5"></i>
+          <span>Open File</span>
+        </button>
+        <button 
+          id="open-file-folder-btn"
+          class="claude-btn-secondary px-4 py-2.5 rounded-xl text-xs font-medium transition cursor-pointer flex items-center justify-center gap-1.5"
+        >
+          <i data-lucide="folder" class="w-3.5 h-3.5"></i>
+          <span>Show in Folder</span>
+        </button>
+        <button 
+          id="download-another-btn"
+          class="claude-btn-secondary px-4 py-2.5 rounded-xl text-xs font-medium transition cursor-pointer"
+        >
+          Done
+        </button>
+      </div>
+    </div>
+
+    <!-- Batch Queue Progress Card -->
+    <div id="batch-queue-card" class="hidden claude-card rounded-2xl p-6 space-y-4 border-[#F0DDD4] bg-[#FDFCFB]">
+      <div class="flex items-center justify-between pb-3 border-b border-[#ECE7E0]">
+        <div class="flex items-center gap-2">
+          <span id="batch-indicator-dot" class="w-2 h-2 rounded-full bg-[#CC785C] animate-pulse"></span>
+          <h3 class="font-serif-claude text-lg font-medium text-[#272522]">Queue Progress</h3>
+          <span id="batch-overall-progress" class="text-xs font-mono-numbers text-[#706D65] ml-2">0 / 0 completed</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="cancel-batch-btn" class="px-2.5 py-1 rounded-lg text-xs font-medium text-[#9E4D4D] hover:text-[#7A2E2E] bg-[#FAF2F2] border border-[#F0D8D8] transition cursor-pointer">
+            Stop Queue
+          </button>
+          <button id="close-batch-queue-btn" class="p-1 rounded-lg text-[#9E9A90] hover:text-[#272522] hover:bg-[#F4F1EA] transition cursor-pointer" title="Close Queue">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Queue Items List -->
+      <div id="batch-items-list" class="space-y-2.5 max-h-72 overflow-y-auto pr-1">
+        <!-- Populated dynamically via JS -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Photo Lightbox Modal -->
+  <div id="photo-lightbox" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="relative max-w-4xl max-h-[90vh] flex flex-col items-center">
+      <button id="close-lightbox-btn" class="absolute -top-10 right-0 text-white/80 hover:text-white transition cursor-pointer p-1">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+      <img id="lightbox-img" src="" alt="Full Resolution Photo" class="max-h-[80vh] w-auto rounded-xl shadow-2xl border border-white/10 object-contain">
+      <div class="mt-3 flex items-center gap-3">
+        <span id="lightbox-title" class="text-xs text-white/80 truncate max-w-md font-medium"></span>
+        <button id="lightbox-download-btn" class="claude-btn-primary px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 cursor-pointer">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i>
+          <span>Download Photo</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Download History Slide-over Drawer -->
+  <div id="history-drawer-backdrop" class="fixed inset-0 bg-black/30 backdrop-blur-xs z-50 hidden transition-opacity opacity-0"></div>
+  <div id="history-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-[#FAF8F5] border-l border-[#ECE7E0] shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+    <!-- Drawer Header -->
+    <div class="px-6 py-5 border-b border-[#ECE7E0] flex items-center justify-between bg-white">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-[#FAF2EE] text-[#CC785C] flex items-center justify-center">
+          <i data-lucide="history" class="w-4 h-4"></i>
+        </div>
+        <div>
+          <h3 class="font-serif-claude text-xl font-medium text-[#272522]">Download History</h3>
+          <p class="text-[11px] text-[#9E9A90]">Recently downloaded media</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="clear-history-btn" title="Clear all history" class="text-xs text-[#9E9A90] hover:text-[#B84D4D] transition px-2 py-1 rounded hover:bg-[#FAF2EE] cursor-pointer">
+          Clear All
+        </button>
+        <button id="close-history-btn" class="text-[#9E9A90] hover:text-[#272522] p-1.5 rounded-lg hover:bg-[#F4F1EA] transition cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Drawer Items List -->
+    <div id="history-list" class="flex-1 overflow-y-auto p-5 space-y-3">
+      <!-- Populated dynamically via JS -->
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-[#ECE7E0] py-6 text-center text-xs text-[#9E9A90]">
+    <p>Pluck — Simple & Fast Local Media Downloader</p>
+  </footer>
+
+  <!-- App Script -->
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+# Python cache & artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Operating System files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Logs & temp files
+*.log
+scratch/
+temp/
+tmp/
+
+# Downloaded media & local binaries
+bin/
+*.mp4
+*.mp3
+*.m4a
+*.webm
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.gif
