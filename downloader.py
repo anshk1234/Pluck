@@ -391,7 +391,15 @@ def extract_video_info(url: str) -> Dict[str, Any]:
     if 'pinterest.com' in url_lower or 'pin.it' in url_lower:
         return extract_pinterest_pin(url)
 
-    # 2. SMART ROUTE: Twitter / X
+    # 2. SMART ROUTE: Video Platforms (YouTube, Instagram, Twitter/X, TikTok)
+    ydl_opts = {
+        'quiet': True,
+        'no_warnings': True,
+        'extract_flat': False,
+        'skip_download': True,
+    }
+
+    # Twitter / X
     if 'twitter.com' in url_lower or 'x.com' in url_lower:
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
